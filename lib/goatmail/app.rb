@@ -42,11 +42,11 @@ module Goatmail
       erb :index
     end
 
-    get '/:id.?:format?' do
-      @message = Goatmail::Message.find(params[:id])
+    get %r{/([a-z0-9_]+).?(html)?} do
+      @message = Goatmail::Message.find(params[:captures].first)
       halt 404 unless @message
       begin
-        @message.render(params[:format]).to_s.
+        @message.render(params[:captures].second).to_s.
           gsub(/"plain\.html"/, %Q("#{root_path + @message.id}")).
           gsub(/"rich\.html"/,  %Q("#{root_path + @message.id}.html")).
           gsub(/"attachments\//, %Q("#{root_path + @message.id}/attachments/))
